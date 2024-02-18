@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>1-Bit Image Designer</title>
+    <style>
+        /* Basic styling for the grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-size), 1fr);
+            gap: 1px;
+            background-color: #ccc;
+        }
+
+        /* Styling for the grid cells */
+        .cell {
+            width: 30px;
+            height: 30px;
+            background-color: #fff;
+            border: 1px solid #999;
+            cursor: pointer;
+        }
+
+        /* Styling for the grid cells when they're clicked */
+        .cell.clicked {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>1-Bit Image Designer</h1>
+
+    <!-- Input grid -->
+    <div class="grid" style="--grid-size: 8;">
+        <!-- Replace the `--grid-size` with any size you want -->
+        <!-- Use a loop to generate cells -->
+        <!-- You can use JavaScript or server-side logic to create the grid based on the size -->
+
+        <!-- Example using JavaScript -->
+        <script>
+            const gridSize = document.querySelector('.grid').style.getPropertyValue('--grid-size');
+            const grid = document.querySelector('.grid');
+
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.addEventListener('click', () => {
+                        cell.classList.toggle('clicked');
+                    });
+                    grid.appendChild(cell);
+                }
+            }
+        </script>
+    </div>
+
+    <!-- JavaScript for exporting the image -->
+    <script>
+        function exportImage() {
+            const gridSize = document.querySelector('.grid').style.getPropertyValue('--grid-size');
+            const grid = document.querySelector('.grid');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = gridSize;
+            canvas.height = gridSize;
+
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = grid.children[i * gridSize + j];
+                    const color = cell.classList.contains('clicked') ? '#000' : '#fff';
+                    context.fillStyle = color;
+                    context.fillRect(j, i, 1, 1);
+                }
+            }
+
+            const dataURL = canvas.toDataURL();
+            console.log(dataURL);
+            // You can send this dataURL to a server or use it for any other purpose.
+        }
+    </script>
+
+    <!-- Button to export the image -->
+    <button onclick="exportImage()">Export Image</button>
+</body>
+</html>
