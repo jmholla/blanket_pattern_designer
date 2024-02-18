@@ -6,8 +6,6 @@
         /* Basic styling for the grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(var(--grid-size), 1fr);
-            gap: 1px;
             background-color: #ccc;
         }
 
@@ -30,55 +28,68 @@
     <h1>1-Bit Image Designer</h1>
 
     <!-- Input grid size -->
-    <label for="gridSize">Grid Size:</label>
-    <input type="number" id="gridSize" name="gridSize" min="1" max="20" value="8">
+    <label for="rows">Rows:</label>
+    <input type="number" id="rows" name="rows" min="1" max="20" value="8">
+    <label for="cols">Columns:</label>
+    <input type="number" id="cols" name="cols" min="1" max="20" value="8">
 
     <!-- Input grid -->
-    <div class="grid">
-        <!-- Use a loop to generate cells -->
-        <!-- You can use JavaScript or server-side logic to create the grid based on the size -->
-
-        <!-- Example using JavaScript -->
-        <script>
-            document.getElementById("gridSize").addEventListener('change', (event) => {
-                const gridSize = event.target.value;
-                const grid = document.querySelector('.grid');
-                grid.style.setProperty('--grid-size', gridSize);
-
-                // Clear the grid
-                grid.innerHTML = '';
-
-                // Create new cells
-                for (let i = 0; i < gridSize; i++) {
-                    for (let j = 0; j < gridSize; j++) {
-                        const cell = document.createElement('div');
-                        cell.classList.add('cell');
-                        cell.addEventListener('click', () => {
-                            cell.classList.toggle('clicked');
-                        });
-                        grid.appendChild(cell);
-                    }
-                }
-            });
-        </script>
+    <div class="grid" id="grid">
     </div>
+
+    <!-- JavaScript for generating the grid -->
+    <script>
+        // Generate the grid when the page loads
+        document.addEventListener("DOMContentLoaded", function(event) {
+            generateGrid();
+        });
+
+        // Generate the grid based on the input values
+        function generateGrid() {
+            const rows = document.getElementById("rows").value;
+            const cols = document.getElementById("cols").value;
+            const grid = document.getElementById("grid");
+            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            // Clear the grid
+            grid.innerHTML = '';
+
+            // Create new cells
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.addEventListener('click', () => {
+                        cell.classList.toggle('clicked');
+                    });
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        // Update the grid when the input values change
+        document.getElementById("rows").addEventListener('change', generateGrid);
+        document.getElementById("cols").addEventListener('change', generateGrid);
+    </script>
 
     <!-- JavaScript for exporting the image -->
     <script>
         function exportImage() {
-            const gridSize = document.querySelector('.grid').style.getPropertyValue('--grid-size');
-            const grid = document.querySelector('.grid');
+            const gridSize = document.getElementById("rows").value;
+            const grid = document.getElementById("grid");
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            canvas.width = gridSize;
-            canvas.height = gridSize;
+            const cellWidth = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('width'));
+            const cellHeight = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('height'));
+            canvas.width = gridSize * cellWidth;
+            canvas.height = gridSize * cellHeight;
 
             for (let i = 0; i < gridSize; i++) {
                 for (let j = 0; j < gridSize; j++) {
                     const cell = grid.children[i * gridSize + j];
                     const color = cell.classList.contains('clicked') ? '#000' : '#fff';
                     context.fillStyle = color;
-                    context.fillRect(j, i, 1, 1);
+                    context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
                 }
             }
 
