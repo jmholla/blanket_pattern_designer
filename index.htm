@@ -190,8 +190,8 @@
             const grid = document.getElementById("grid");
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            const cellWidth = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('width'));
-            const cellHeight = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('height'));
+            const cellWidth = 40;
+            const cellHeight = 40;
             canvas.width = gridSize * cellWidth;
             canvas.height = gridSize * cellHeight;
 
