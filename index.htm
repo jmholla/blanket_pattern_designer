@@ -3,6 +3,17 @@
 <head>
     <title>Blanket Pattern Designer</title>
     <style>
+        h1 {
+          text-align: center;
+        }
+        .all-settings {
+            padding-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            margin: auto;
+            gap: 20px;
+            width: max-content;
+        }
         .settings-box {
             border: 2px solid #ccc;
             padding: 20px;
@@ -11,7 +22,20 @@
             flex-direction: column;
             gap: 10px;
             width: max-content;
-            margin: auto;
+        }
+        .settings-box div {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+        }
+        .settings-box div div {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .settings-box .input-group {
+            display: flex;
+            gap: 10px;
         }
         .settings-box label {
             margin-right: 10px;
@@ -26,6 +50,7 @@
             /* Adjust grid size to fit reference image */
             grid-auto-rows: minmax(0, 1fr);
             grid-gap: 0;
+            margin: auto;
         }
 
         /* Styling for the grid cells */
@@ -56,28 +81,38 @@
 <body>
     <h1>Blanket Pattern Designer</h1>
 
+    <!-- Input grid size -->
+    <div class="all-settings">
+      <div class="settings-box">
+          <div>
+              <div>
+                  <label for="rows">Rows:</label>
+                  <input type="number" id="rows" name="rows" min="1" max="20" value="8">
+              </div>
+              <div>
+                  <label for="cols">Columns:</label>
+                  <input type="number" id="cols" name="cols" min="1" max="20" value="8">
+              </div>
+
+              <!-- Input cell size -->
+              <div>
+                  <label for="cellSize">Cell Size (pixels):</label>
+                  <input type="number" id="cellSize" name="cellSize" min="10" max="100" value="30">
+              </div>
+          </div>
+
+          <!-- Input reference image -->
+          <label for="referenceImage">Reference Image:</label>
+          <input type="file" id="referenceImage" name="referenceImage">
+      </div>
+
+      <!-- Button to export the image -->
+      <button onclick="exportImage()">Download Image</button>
+
+    </div>
     <!-- Input grid -->
     <div class="grid" id="grid">
     </div>
-
-    <!-- Input grid size -->
-    <div class="settings-box">
-    <label for="rows">Rows:</label>
-    <input type="number" id="rows" name="rows" min="1" max="20" value="8">
-    <label for="cols">Columns:</label>
-    <input type="number" id="cols" name="cols" min="1" max="20" value="8">
-
-    <!-- Input cell size -->
-    <label for="cellSize">Cell Size (pixels):</label>
-    <input type="number" id="cellSize" name="cellSize" min="10" max="100" value="30">
-
-    <!-- Input reference image -->
-    <label for="referenceImage">Reference Image:</label>
-    <input type="file" id="referenceImage" name="referenceImage">
-    </div>
-
-    <!-- Button to export the image -->
-    <button onclick="exportImage()">Download Image</button>
 
     <!-- JavaScript for generating the grid and setting reference image -->
     <script>
@@ -139,54 +174,54 @@
     </script>
 
     <!-- JavaScript for exporting the image -->
-		<script>
-				function exportImage() {
-						const gridSize = document.getElementById("rows").value;
-						const grid = document.getElementById("grid");
-						const canvas = document.createElement('canvas');
-						const context = canvas.getContext('2d');
-						const cellWidth = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('width'));
-						const cellHeight = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('height'));
-						canvas.width = gridSize * cellWidth;
-						canvas.height = gridSize * cellHeight;
+    <script>
+        function exportImage() {
+            const gridSize = document.getElementById("rows").value;
+            const grid = document.getElementById("grid");
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const cellWidth = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('width'));
+            const cellHeight = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('height'));
+            canvas.width = gridSize * cellWidth;
+            canvas.height = gridSize * cellHeight;
 
-						// Clear the canvas
-						context.clearRect(0, 0, canvas.width, canvas.height);
+            // Clear the canvas
+            context.clearRect(0, 0, canvas.width, canvas.height);
 
-						// Draw grid cells
-						for (let i = 0; i < gridSize; i++) {
-								for (let j = 0; j < gridSize; j++) {
-										const cell = grid.children[i * gridSize + j];
-										const color = cell.classList.contains('clicked') ? '#000' : '#fff';
-										context.fillStyle = color;
-										context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-								}
-						}
+            // Draw grid cells
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = grid.children[i * gridSize + j];
+                    const color = cell.classList.contains('clicked') ? '#000' : '#fff';
+                    context.fillStyle = color;
+                    context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
+                }
+            }
 
-						// Draw grid lines
-						context.strokeStyle = 'rgba(0, 0, 0, 0.5)'; // Adjust transparency if needed
-						context.lineWidth = 1;
-						for (let i = 1; i < gridSize; i++) {
-								// Horizontal lines
-								context.beginPath();
-								context.moveTo(0, i * cellHeight);
-								context.lineTo(canvas.width, i * cellHeight);
-								context.stroke();
-								// Vertical lines
-								context.beginPath();
-								context.moveTo(i * cellWidth, 0);
-								context.lineTo(i * cellWidth, canvas.height);
-								context.stroke();
-						}
+            // Draw grid lines
+            context.strokeStyle = 'rgba(0, 0, 0, 0.5)'; // Adjust transparency if needed
+            context.lineWidth = 1;
+            for (let i = 1; i < gridSize; i++) {
+                // Horizontal lines
+                context.beginPath();
+                context.moveTo(0, i * cellHeight);
+                context.lineTo(canvas.width, i * cellHeight);
+                context.stroke();
+                // Vertical lines
+                context.beginPath();
+                context.moveTo(i * cellWidth, 0);
+                context.lineTo(i * cellWidth, canvas.height);
+                context.stroke();
+            }
 
-						// Create a download link
-						const downloadLink = document.createElement('a');
-						downloadLink.href = canvas.toDataURL();
-						downloadLink.download = 'image.png';
+            // Create a download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = canvas.toDataURL();
+            downloadLink.download = 'image.png';
 
-						// Simulate a click on the download link
-						downloadLink.click();
-				}
-		</script>
+            // Simulate a click on the download link
+            downloadLink.click();
+        }
+    </script>
 </body>
 </html>
