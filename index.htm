@@ -94,8 +94,14 @@
             }
 
             const dataURL = canvas.toDataURL();
-            console.log(dataURL);
-            // You can send this dataURL to a server or use it for any other purpose.
+
+            // Create a download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = dataURL;
+            downloadLink.download = 'image.png';
+
+            // Simulate a click on the download link
+            downloadLink.click();
         }
     </script>
 
