@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>1-Bit Image Designer</title>
+    <title>Blanket Pattern Designer</title>
     <style>
+        .settings-box {
+            border: 2px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: max-content;
+            margin: auto;
+        }
+        .settings-box label {
+            margin-right: 10px;
+        }
+        .settings-box input[type="number"] {
+            width: 50px; /* You can adjust the width as per your need */
+        }
         /* Basic styling for the grid */
         .grid {
             display: grid;
@@ -38,9 +54,14 @@
     </style>
 </head>
 <body>
-    <h1>1-Bit Image Designer</h1>
+    <h1>Blanket Pattern Designer</h1>
+
+    <!-- Input grid -->
+    <div class="grid" id="grid">
+    </div>
 
     <!-- Input grid size -->
+    <div class="settings-box">
     <label for="rows">Rows:</label>
     <input type="number" id="rows" name="rows" min="1" max="20" value="8">
     <label for="cols">Columns:</label>
@@ -53,10 +74,10 @@
     <!-- Input reference image -->
     <label for="referenceImage">Reference Image:</label>
     <input type="file" id="referenceImage" name="referenceImage">
-
-    <!-- Input grid -->
-    <div class="grid" id="grid">
     </div>
+
+    <!-- Button to export the image -->
+    <button onclick="exportImage()">Download Image</button>
 
     <!-- JavaScript for generating the grid and setting reference image -->
     <script>
@@ -167,8 +188,5 @@
 						downloadLink.click();
 				}
 		</script>
-
-    <!-- Button to export the image -->
-    <button onclick="exportImage()">Export Image</button>
 </body>
 </html>
