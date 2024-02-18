@@ -104,37 +104,55 @@
     </script>
 
     <!-- JavaScript for exporting the image -->
-    <script>
-        function exportImage() {
-            const gridSize = document.getElementById("rows").value;
-            const grid = document.getElementById("grid");
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const cellWidth = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('width'));
-            const cellHeight = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('height'));
-            canvas.width = gridSize * cellWidth;
-            canvas.height = gridSize * cellHeight;
+		<script>
+				function exportImage() {
+						const gridSize = document.getElementById("rows").value;
+						const grid = document.getElementById("grid");
+						const canvas = document.createElement('canvas');
+						const context = canvas.getContext('2d');
+						const cellWidth = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('width'));
+						const cellHeight = parseFloat(window.getComputedStyle(grid.children[0]).getPropertyValue('height'));
+						canvas.width = gridSize * cellWidth;
+						canvas.height = gridSize * cellHeight;
 
-            for (let i = 0; i < gridSize; i++) {
-                for (let j = 0; j < gridSize; j++) {
-                    const cell = grid.children[i * gridSize + j];
-                    const color = cell.classList.contains('clicked') ? '#000' : '#fff';
-                    context.fillStyle = color;
-                    context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-                }
-            }
+						// Clear the canvas
+						context.clearRect(0, 0, canvas.width, canvas.height);
 
-            const dataURL = canvas.toDataURL();
+						// Draw grid cells
+						for (let i = 0; i < gridSize; i++) {
+								for (let j = 0; j < gridSize; j++) {
+										const cell = grid.children[i * gridSize + j];
+										const color = cell.classList.contains('clicked') ? '#000' : '#fff';
+										context.fillStyle = color;
+										context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
+								}
+						}
 
-            // Create a download link
-            const downloadLink = document.createElement('a');
-            downloadLink.href = dataURL;
-            downloadLink.download = 'image.png';
+						// Draw grid lines
+						context.strokeStyle = 'rgba(0, 0, 0, 0.5)'; // Adjust transparency if needed
+						context.lineWidth = 1;
+						for (let i = 1; i < gridSize; i++) {
+								// Horizontal lines
+								context.beginPath();
+								context.moveTo(0, i * cellHeight);
+								context.lineTo(canvas.width, i * cellHeight);
+								context.stroke();
+								// Vertical lines
+								context.beginPath();
+								context.moveTo(i * cellWidth, 0);
+								context.lineTo(i * cellWidth, canvas.height);
+								context.stroke();
+						}
 
-            // Simulate a click on the download link
-            downloadLink.click();
-        }
-    </script>
+						// Create a download link
+						const downloadLink = document.createElement('a');
+						downloadLink.href = canvas.toDataURL();
+						downloadLink.download = 'image.png';
+
+						// Simulate a click on the download link
+						downloadLink.click();
+				}
+		</script>
 
     <!-- Button to export the image -->
     <button onclick="exportImage()">Export Image</button>
