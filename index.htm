@@ -60,6 +60,9 @@
 
     <!-- JavaScript for generating the grid and setting reference image -->
     <script>
+        // Define initial state of cells
+        const cellState = {};
+
         // Generate the grid when the page loads
         document.addEventListener("DOMContentLoaded", function(event) {
             generateGrid();
@@ -69,6 +72,7 @@
         function generateGrid() {
             const rows = document.getElementById("rows").value;
             const cols = document.getElementById("cols").value;
+            const cellSize = document.getElementById("cellSize").value;
             const grid = document.getElementById("grid");
             grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
@@ -80,10 +84,16 @@
                 for (let j = 0; j < cols; j++) {
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
-                    cell.style.width = cell.style.height = `${document.getElementById("cellSize").value}px`;
+                    cell.style.width = cell.style.height = `${cellSize}px`;
                     cell.addEventListener('click', () => {
                         cell.classList.toggle('clicked');
+                        // Update cell state
+                        cellState[`${i}-${j}`] = cell.classList.contains('clicked');
                     });
+                    // Restore previous cell state if exists
+                    if (cellState[`${i}-${j}`]) {
+                        cell.classList.add('clicked');
+                    }
                     grid.appendChild(cell);
                 }
             }
