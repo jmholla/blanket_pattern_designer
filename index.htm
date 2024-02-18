@@ -104,6 +104,9 @@
           <!-- Input reference image -->
           <label for="referenceImage">Reference Image:</label>
           <input type="file" id="referenceImage" name="referenceImage">
+
+          <!-- Button to clear reference image -->
+          <button id="clearReferenceImage">Clear Reference Image</button>
       </div>
 
       <!-- Button to export the image -->
@@ -165,6 +168,13 @@
                 reader.readAsDataURL(referenceImage);
             }
         }
+        // Clear reference image
+        document.getElementById("clearReferenceImage").addEventListener('click', function() {
+            const grid = document.getElementById("grid");
+            grid.style.backgroundImage = '';
+            grid.classList.remove('reference-image');
+            document.getElementById("referenceImage").value = ''; // Clears the file input
+        });
 
         // Update the grid when the input values change
         document.getElementById("rows").addEventListener('change', generateGrid);
