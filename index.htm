@@ -110,7 +110,14 @@
       </div>
 
       <!-- Button to export the image -->
-      <button onclick="exportImage()">Download Image</button>
+      <div>
+          <div>
+              <button onclick="exportImage()">Download Pattern</button>
+          </div>
+          <div>
+              <input type="file" id="fileInput" accept="image/*">
+          </div>
+      </div>
 
     </div>
     <!-- Input grid -->
@@ -176,11 +183,74 @@
             document.getElementById("referenceImage").value = ''; // Clears the file input
         });
 
+        function importImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const hiddenCanvas = document.createElement('canvas');
+                    const hiddenContext = hiddenCanvas.getContext('2d');
+                    hiddenCanvas.width = img.width;
+                    hiddenCanvas.height = img.height;
+                    hiddenContext.drawImage(img, 0, 0);
+
+                    // Analyze pixels to determine grid dimensions and cell colors
+                    const cellWidth = 40; // Calculate cell width
+                    const cellHeight = 40; // Calculate cell height
+                    const gridWidth = img.width / cellWidth; // Calculate grid width
+                    const gridHeight = img.height / cellHeight; // Calculate grid height
+                    const cellColors = []; // Calculate cell colors
+
+                    // Update UI with grid dimensions
+                    document.getElementById("rows").value = gridHeight;
+                    document.getElementById("cols").value = gridWidth;
+                    generateGrid()
+
+                    cells = document.getElementById("grid").children
+                    for (let i = 0; i < gridHeight; i++) {
+                        for (let j = 0; j < gridWidth; j++) {
+                            const pixel = hiddenContext.getImageData(j * 40 + 20, i * 40 + 20, 1, 1);
+                            const cell = cells[i * gridWidth + j]
+                            if (pixel.data.some((value, index) => index != 3 && value === 0)) {
+                                if (! cell.classList.contains('clicked')) {
+                                    console.log("CLICKING")
+                                    cell.classList.add('clicked')
+                                }
+                            } else {
+                                cell.classList.remove('clicked')
+                            }
+                            cellState[`${i}-${j}`] = cell.classList.contains('clicked');
+                        }
+                    }
+
+                    // // Update UI with grid dimensions and cell colors
+                    // document.getElementById("rows").value = gridHeight;
+                    // document.getElementById("cols").value = gridWidth;
+                    // document.getElementById("grid").innerHTML = ''; // Clear grid
+                    // for (let i = 0; i < gridHeight; i++) {
+                    //     for (let j = 0; j < gridWidth; j++) {
+                    //         const cell = document.createElement('div');
+                    //         cell.classList.add('cell');
+                    //         cell.style.width = cellWidth + 'px';
+                    //         cell.style.height = cellHeight + 'px';
+                    //         cell.style.backgroundColor = cellColors[i * gridWidth + j];
+                    //         document.getElementById("grid").appendChild(cell);
+                    //     }
+                    // }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+
         // Update the grid when the input values change
         document.getElementById("rows").addEventListener('change', generateGrid);
         document.getElementById("cols").addEventListener('change', generateGrid);
         document.getElementById("cellSize").addEventListener('change', generateGrid);
         document.getElementById("referenceImage").addEventListener('change', generateGrid);
+        document.getElementById("fileInput").addEventListener('change', importImage);
     </script>
 
     <!-- JavaScript for exporting the image -->
