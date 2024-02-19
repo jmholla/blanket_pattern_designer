@@ -186,22 +186,23 @@
     <!-- JavaScript for exporting the image -->
     <script>
         function exportImage() {
-            const gridSize = document.getElementById("rows").value;
+            const gridHeight = document.getElementById("rows").value;
+            const gridWidth = document.getElementById("cols").value;
             const grid = document.getElementById("grid");
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             const cellWidth = 40;
             const cellHeight = 40;
-            canvas.width = gridSize * cellWidth;
-            canvas.height = gridSize * cellHeight;
+            canvas.width = gridWidth * cellWidth;
+            canvas.height = gridHeight * cellHeight;
 
             // Clear the canvas
             context.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw grid cells
-            for (let i = 0; i < gridSize; i++) {
-                for (let j = 0; j < gridSize; j++) {
-                    const cell = grid.children[i * gridSize + j];
+            for (let i = 0; i < gridHeight; i++) {
+                for (let j = 0; j < gridWidth; j++) {
+                    const cell = grid.children[i * gridWidth + j];
                     const color = cell.classList.contains('clicked') ? '#000' : '#fff';
                     context.fillStyle = color;
                     context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
@@ -211,12 +212,14 @@
             // Draw grid lines
             context.strokeStyle = 'rgba(0, 0, 0, 0.5)'; // Adjust transparency if needed
             context.lineWidth = 1;
-            for (let i = 1; i < gridSize; i++) {
+            for (let i = 1; i < gridHeight; i++) {
                 // Horizontal lines
                 context.beginPath();
                 context.moveTo(0, i * cellHeight);
                 context.lineTo(canvas.width, i * cellHeight);
                 context.stroke();
+            }
+            for (let i = 1; i < gridWidth; i++) {
                 // Vertical lines
                 context.beginPath();
                 context.moveTo(i * cellWidth, 0);
