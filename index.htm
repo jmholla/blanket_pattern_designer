@@ -234,7 +234,7 @@
                         for (let j = 0; j < gridWidth; j++) {
                             const pixel = hiddenContext.getImageData(j * 40 + 20, i * 40 + 20, 1, 1);
                             const cell = cells[i * gridWidth + j]
-                            if (pixel.data.some((value, index) => index != 3 && value === 0)) {
+                            if (pixel.data.some((value, index) => index != 3 && value <= 196)) {
                                 if (! cell.classList.contains('clicked')) {
                                     console.log("CLICKING")
                                     cell.classList.add('clicked')
@@ -295,14 +295,14 @@
             for (let i = 0; i < gridHeight; i++) {
                 for (let j = 0; j < gridWidth; j++) {
                     const cell = grid.children[i * gridWidth + j];
-                    const color = cell.classList.contains('clicked') ? '#000' : '#fff';
+                    const color = cell.classList.contains('clicked') ? '#666' : '#fff';
                     context.fillStyle = color;
                     context.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
                 }
             }
 
             // Draw grid lines
-            context.strokeStyle = 'rgba(0, 0, 0, 0.5)'; // Adjust transparency if needed
+            context.strokeStyle = 'rgba(0, 0, 0, 1.0)'; // Adjust transparency if needed
             context.lineWidth = 1;
             for (let i = 1; i < gridHeight; i++) {
                 // Horizontal lines
